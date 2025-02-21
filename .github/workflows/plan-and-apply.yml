@@ -40,7 +40,8 @@ jobs:
           echo $CONFIG
 
       - run: |
-          cd ./$CONFIG
+          pwd
+          cd $CONFIG
           pwd
 
       - run: terraform init
