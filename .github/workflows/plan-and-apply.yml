@@ -39,7 +39,9 @@ jobs:
           CONFIG=`cat configuration.txt`
           echo $CONFIG
 
-      - run: cd ./$CONFIG
+      - run: |
+          cd ./$CONFIG
+          pwd
 
       - run: terraform init
       
