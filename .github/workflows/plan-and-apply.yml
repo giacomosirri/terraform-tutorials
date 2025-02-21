@@ -35,7 +35,9 @@ jobs:
         uses: hashicorp/setup-terraform@v3
       
       - name: Read configuration file
-        run: CONFIG=`cat configuration.txt`
+        run: |
+          CONFIG=`cat configuration.txt`
+          echo $CONFIG
 
       - run: cd ./$CONFIG
 
