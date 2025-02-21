@@ -34,16 +34,18 @@ jobs:
       - name: Install Terraform CLI
         uses: hashicorp/setup-terraform@v3
       
-      - name: Read configuration file
-        run: |
-          CONFIG=`cat configuration.txt`
-          
+      - name: Select module from configuration file
+        id: select-module
+        run: echo "MODULE=`cat configuration.txt`" >> "$GITHUB_OUTPUT"
 
-      - run: |
-          echo $CONFIG
-          ls -alh
+      - name: Use configuration to select module to apply
+        env:
+          MODULE: ${{ steps.select-module.outputs.MODULE }}
+        run: |
+          echo $MODULE
           pwd
-          cd $CONFIG
+          ls -alh
+          cd $MODULE
           pwd
 
       - run: terraform init
