@@ -38,16 +38,8 @@ jobs:
         id: select-module
         run: echo "MODULE=`cat configuration.txt`" >> "$GITHUB_OUTPUT"
 
-      - name: Use configuration to select module to apply
-        env:
-          MODULE: ${{ steps.select-module.outputs.MODULE }}
-        run: |
-          pwd
-          ls -alh
-          cd $MODULE
-          pwd
-          ls -alh
-
       - run: terraform init
+        working-directory: ./${{ steps.select-module.outputs.MODULE }}
       
       - run: terraform plan
+        working-directory: ./${{ steps.select-module.outputs.MODULE }}
