@@ -42,11 +42,11 @@ jobs:
         env:
           MODULE: ${{ steps.select-module.outputs.MODULE }}
         run: |
-          echo $MODULE
           pwd
           ls -alh
           cd $MODULE
           pwd
+          ls -alh
 
       - run: terraform init
       
