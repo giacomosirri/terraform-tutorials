@@ -24,12 +24,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # - name: Azure login
-      #   uses: azure/login@v1 
-      #   with:
-      #     client-id: ${{ secrets.AZURE_CLIENT_ID }}
-      #     subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      #     tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      - name: Azure login
+        uses: azure/login@v1 
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
       - name: Install Terraform CLI
         uses: hashicorp/setup-terraform@v3
