@@ -53,5 +53,5 @@ jobs:
       - run: terraform init
         working-directory: ./${{ steps.select-module.outputs.MODULE }}
       
-      - run: terraform plan -var "tenant-id=${{ secrets.AZURE_TENANT_ID }}" "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" "client-id=${{ secrets.AZURE_CLIENT_ID }}"
+      - run: terraform plan -var "tenant-id=${{ secrets.AZURE_TENANT_ID }}" -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var "client-id=${{ secrets.AZURE_CLIENT_ID }}"
         working-directory: ./${{ steps.select-module.outputs.MODULE }}
