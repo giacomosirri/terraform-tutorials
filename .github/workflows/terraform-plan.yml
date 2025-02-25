@@ -6,10 +6,9 @@ on:
     types: [opened, edited]
     branches:
       - main
-
-permissions:
-  id-token: write
-  contents: read
+  push:
+    branches-ignore:
+      - main
 
 jobs:
   plan:
@@ -17,8 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: dev
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Azure login
         uses: azure/login@v1 
@@ -49,5 +54,12 @@ jobs:
       - run: terraform init
         working-directory: ./${{ steps.select-module.outputs.MODULE }}
       
-      - run: terraform plan
+      - run: terraform plan -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -out .planfile
         working-directory: ./${{ steps.select-module.outputs.MODULE }}
+      
+      - name: Post PR comment
+        uses: borchero/terraform-plan-comment@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          planfile: .planfile
+          working-directory: ./${{ steps.select-module.outputs.MODULE }}
