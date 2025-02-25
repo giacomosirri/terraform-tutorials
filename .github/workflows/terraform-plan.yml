@@ -56,3 +56,13 @@ jobs:
       
       - run: terraform plan -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
         working-directory: ./${{ steps.select-module.outputs.MODULE }}
+      
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            octokit.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting!'
+            })
