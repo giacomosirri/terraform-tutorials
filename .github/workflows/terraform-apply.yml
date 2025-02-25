@@ -45,5 +45,5 @@ jobs:
       - run: terraform init
         working-directory: ./${{ steps.select-module.outputs.MODULE }}
       
-      - run: terraform apply
+      - run: terraform apply -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
         working-directory: ./${{ steps.select-module.outputs.MODULE }}
