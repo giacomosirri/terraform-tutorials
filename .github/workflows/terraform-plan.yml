@@ -1,10 +1,7 @@
-name: Terraform Plan and Apply Workflow
+name: Terraform plan workflow
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
   pull_request:
     types: [opened, edited]
     branches:
@@ -16,11 +13,10 @@ permissions:
 
 jobs:
   plan:
-    name: Terraform Plan
+    name: Terraform plan
     runs-on: ubuntu-latest
     environment:
       name: dev
-    # if: github.event_name == 'push' && github.ref == '/refs/heads/main'
     steps:
       - uses: actions/checkout@v4
 
@@ -53,5 +49,5 @@ jobs:
       - run: terraform init
         working-directory: ./${{ steps.select-module.outputs.MODULE }}
       
-      - run: terraform plan -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+      - run: terraform plan
         working-directory: ./${{ steps.select-module.outputs.MODULE }}
