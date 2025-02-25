@@ -7,7 +7,7 @@ on:
     branches:
       - main
   push:
-    branches:
+    branches-ignore:
       - main
 
 jobs:
@@ -34,8 +34,6 @@ jobs:
 
       - name: Install Terraform CLI
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_wrapper: false
 
       - name: Select module from configuration file
         id: select-module
