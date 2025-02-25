@@ -7,7 +7,7 @@ on:
     branches:
       - main
   push:
-    branches:
+    branches-ignore:
       - main
 
 jobs:
@@ -17,11 +17,9 @@ jobs:
     environment:
       name: dev
     permissions:
-      id-token: write      # Required for OIDC authentication.
-      actions: read        # Required to identify workflow run.
-      checks: write        # Required to add status summary.
-      contents: read       # Required to checkout repository.
-      pull-requests: write # Required to add comment and label.
+      id-token: write
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,8 +34,6 @@ jobs:
 
       - name: Install Terraform CLI
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_wrapper: false
 
       - name: Select module from configuration file
         id: select-module
@@ -55,24 +51,15 @@ jobs:
           export ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }} \
           export ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> "$GITHUB_OUTPUT"
 
-      - uses: op5dev/tf-via-pr@v13
+      - run: terraform init
+        working-directory: ./${{ steps.select-module.outputs.MODULE }}
+      
+      - run: terraform plan -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -out .planfile
+        working-directory: ./${{ steps.select-module.outputs.MODULE }}
+      
+      - name: Post PR comment
+        uses: borchero/terraform-plan-comment@v2
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          planfile: .planfile
           working-directory: ./${{ steps.select-module.outputs.MODULE }}
-          # Run plan by default, or apply on push to main.
-          command: ${{ github.event_name == 'push' && 'apply' || 'plan' }}
-          # arg-lock: ${{ github.event_name == 'push' }}
-          arg-var: subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          plan-encrypt: ${{ secrets.TERRAFORM_PASSPHRASE }}
-
-      # - run: terraform init
-      #   working-directory: ./${{ steps.select-module.outputs.MODULE }}
-      
-      # - run: terraform plan -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -out .planfile
-      #   working-directory: ./${{ steps.select-module.outputs.MODULE }}
-      
-      # - name: Post PR comment
-      #   uses: borchero/terraform-plan-comment@v2
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     planfile: .planfile
-      #     working-directory: ./${{ steps.select-module.outputs.MODULE }}
