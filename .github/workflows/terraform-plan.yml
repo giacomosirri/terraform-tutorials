@@ -10,16 +10,16 @@ on:
     branches-ignore:
       - main
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   plan:
     name: Terraform plan
     runs-on: ubuntu-latest
     environment:
       name: dev
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -60,6 +60,6 @@ jobs:
       - name: Post PR comment
         uses: borchero/terraform-plan-comment@v2
         with:
-          token: ${{ github.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           planfile: .planfile
           working-directory: ./${{ steps.select-module.outputs.MODULE }}
