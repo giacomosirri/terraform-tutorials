@@ -20,7 +20,7 @@ jobs:
 
       - name: Azure login and Terraform initialization
         id: composite-action
-        uses: ./.github/actions/azure-action
+        uses: ./.github/actions/azure-actions
 
       - name: Terraform apply command
         run: terraform apply -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -input=false
