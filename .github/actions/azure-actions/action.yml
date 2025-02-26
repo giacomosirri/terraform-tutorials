@@ -15,7 +15,6 @@ runs:
   using: "composite"
   steps:
     - name: Install Terraform CLI
-      shell: bash
       uses: hashicorp/setup-terraform@v3
     
     - name: Select module from configuration file
