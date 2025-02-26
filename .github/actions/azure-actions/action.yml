@@ -15,22 +15,26 @@ runs:
   using: "composite"
   steps:
     - name: Install Terraform CLI
+      shell: bash
       uses: hashicorp/setup-terraform@v3
     
     - name: Select module from configuration file
       id: select-module
+      shell: bash
       run: echo "MODULE=`cat configuration.txt`" >> "$GITHUB_OUTPUT"
 
     - run: terraform init
+      shell: bash
       working-directory: ./${{ steps.select-module.outputs.MODULE }}
 
     # Without setting the following environment variables, Terraform would try
     # to build the AzureRM client by authenticating to Azure using the Azure CLI, 
     # which is only supported as a user and not as a service principal. 
     - name: Set environment variables
-    # Since every step runs its own shell environment, exporting variables is not
-    # sufficient to extend their scope to later steps. The way to make them available
-    # is to append them to the GITHUB_OUTPUT environment variable.
+      # Since every step runs its own shell environment, exporting variables is not
+      # sufficient to extend their scope to later steps. The way to make them available
+      # is to append them to the GITHUB_OUTPUT environment variable.
+      shell: bash
       run: |
         echo "export ARM_CLIENT_ID=${{ inputs.azure_client_id }} \
         export ARM_SUBSCRIPTION_ID=${{ inputs.azure_subscription_id }} \
