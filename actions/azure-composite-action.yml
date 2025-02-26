@@ -7,8 +7,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
-
     - name: Install Terraform CLI
       uses: hashicorp/setup-terraform@v3
     

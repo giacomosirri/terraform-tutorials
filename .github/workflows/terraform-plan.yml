@@ -21,6 +21,8 @@ jobs:
       contents: read
       pull-requests: write
     steps:
+      - uses: actions/checkout@v4
+      
       - name: Azure login and Terraform initialization
         id: composite-action
         uses: ./.github/actions/terraform-tutorials/actions/
