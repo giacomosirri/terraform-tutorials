@@ -10,7 +10,8 @@ inputs:
 outputs:
   working_directory:
     description: "The directory where the subsequent Terraform commands must be run."
-    value: ${{ steps.select-module.outputs.MODULE }}
+    value: "module-get-started-azure"
+    #value: ${{ steps.select-module.outputs.MODULE }}
 runs:
   using: "composite"
   steps:
@@ -21,9 +22,6 @@ runs:
       id: select-module
       shell: bash
       run: echo "MODULE=`cat configuration.txt`" >> "$GITHUB_OUTPUT"
-
-    - run: echo "${{ steps.select-module.outputs.MODULE }}""
-      shell: bash
 
     - run: terraform init
       shell: bash
