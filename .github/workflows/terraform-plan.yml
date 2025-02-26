@@ -26,6 +26,10 @@ jobs:
       - name: Azure login and Terraform initialization
         id: composite-action
         uses: ./.github/actions/azure-actions
+        with:
+          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
 
       - run: terraform plan -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -out .planfile
         working-directory: ./${{ steps.composite-action.outputs.working-directory }}

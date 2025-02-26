@@ -1,5 +1,12 @@
 name: 'Initialize Azure and Terraform'
 description: 'Composite action for automation of the Azure login and Terraform initialization.'
+inputs:
+  azure_client_id:
+    required: true
+  azure_subscription_id:
+    required: true
+  azure_tenant_id:
+    required: true
 outputs:
   working_directory:
     description: "The directory where the subsequent Terraform commands must be run."
@@ -25,6 +32,6 @@ runs:
     # sufficient to extend their scope to later steps. The way to make them available
     # is to append them to the GITHUB_OUTPUT environment variable.
       run: |
-        echo "export ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }} \
-        export ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }} \
-        export ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> "$GITHUB_OUTPUT"
+        echo "export ARM_CLIENT_ID=${{ inputs.azure_client_id }} \
+        export ARM_SUBSCRIPTION_ID=${{ inputs.azure_subscription_id }} \
+        export ARM_TENANT_ID=${{ inputs.azure_tenant_id }}" >> "$GITHUB_OUTPUT"
