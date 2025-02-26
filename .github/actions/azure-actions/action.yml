@@ -22,6 +22,8 @@ runs:
       shell: bash
       run: echo "MODULE=`cat configuration.txt`" >> "$GITHUB_OUTPUT"
 
+    - run: echo ${{ steps.select-module.outputs.MODULE }}
+    
     - run: terraform init
       shell: bash
       working-directory: ./${{ steps.select-module.outputs.MODULE }}
