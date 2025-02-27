@@ -1,42 +1,49 @@
-name: Terraform plan workflow
+name: Terraform plan reusable workflow
 
 on:
-  # workflow_dispatch:
-  pull_request:
-    types: [opened, edited]
-    branches:
-      - main
-  push:
-    branches-ignore:
-      - main
+  workflow_call:
+    inputs:
+      cloud-provider:
+        required: true
+        type: string
+      module:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
 
 jobs:
-  plan:
+  terraform-plan:
     name: Terraform plan
     runs-on: ubuntu-latest
-    environment:
-      name: dev
-    permissions:
-      id-token: write
-      contents: read
-      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       
       - name: Azure login and Terraform initialization
         id: composite-action
+        if: ${{ inputs.cloud-provider == 'azure' }}
         uses: ./.github/actions/azure-actions
         with:
+          terraform_module: ${{ inputs.module }}
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
           azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
 
-      - run: terraform plan -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -out .planfile
-        working-directory: ./${{ steps.composite-action.outputs.working-directory }}
+      - name: Terraform plan
+        run: |
+          if [ "${{ inputs.cloud-provider }}" == "azure" ]; then
+            terraform plan -var subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }} -out .planfile
+          else
+            terraform plan -out .planfile
+          fi
+        working-directory: ./${{ inputs.module }}
       
       - name: Post PR comment
         uses: borchero/terraform-plan-comment@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           planfile: .planfile
-          working-directory: ./${{ steps.composite-action.outputs.working-directory }}
+          working-directory: ./${{ inputs.module }}

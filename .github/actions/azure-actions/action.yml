@@ -1,16 +1,27 @@
 name: 'Initialize Azure and Terraform'
 description: 'Composite action for automation of the Azure login and Terraform initialization.'
+
 inputs:
+  terraform_module:
+    description: "Terraform module name"
+    required: true
+    type: string
+
   azure_client_id:
+    description: "Azure service principal id (client id)"
     required: true
+    type: string
+
   azure_subscription_id:
+    description: "Azure subscription id"
     required: true
+    type: string
+
   azure_tenant_id:
+    description: "Azure tenant id"
     required: true
-outputs:
-  working-directory:
-    description: "The directory where the subsequent Terraform commands must be run."
-    value: ${{ steps.select-module.outputs.MODULE }}
+    type: string
+
 runs:
   using: "composite"
   steps:
@@ -21,17 +32,12 @@ runs:
         subscription-id: ${{ inputs.azure_subscription_id }}
         tenant-id: ${{ inputs.azure_tenant_id }}
 
-    - name: Install Terraform CLI
+    - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
-    
-    - name: Select module from configuration file
-      id: select-module
-      shell: bash
-      run: echo "MODULE=`cat configuration.txt`" >> "$GITHUB_OUTPUT"
 
-    - run: terraform init
+    - run: Terraform init
       shell: bash
-      working-directory: ./${{ steps.select-module.outputs.MODULE }}
+      working-directory: ./${{ inputs.terraform_module }}
 
     # Without setting the following environment variables, Terraform would try
     # to build the AzureRM client by authenticating to Azure using the Azure CLI, 

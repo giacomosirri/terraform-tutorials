@@ -1,9 +1,14 @@
-name: Terraform apply workflow
+name: Terraform apply reusable workflow
 
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      cloud-provider:
+        required: true
+        type: string
+      module:
+        required: true
+        type: string
 
 permissions:
   id-token: write
@@ -13,26 +18,24 @@ jobs:
   apply:
     name: Apply Terraform configuration
     runs-on: ubuntu-latest
-    environment:
-      name: dev
     steps:
       - uses: actions/checkout@v4
 
       - name: Azure login and Terraform initialization
         id: composite-action
+        if: ${{ inputs.cloud-provider == 'azure' }}
         uses: ./.github/actions/azure-actions
         with:
+          terraform_module: ${{ inputs.module }}
           azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
           azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-
-      - run: echo "${{ steps.composite-action.outputs.working-directory }}"
-
-      - run: |
-          pwd
-          ls -alh
-        working-directory: ./${{ steps.composite-action.outputs.working-directory }}
         
-      - name: Terraform apply command
-        run: terraform apply -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -auto-approve
-        working-directory: ./${{ steps.composite-action.outputs.working-directory }}
+      - name: Terraform apply
+        run: |
+          if [ "${{ inputs.cloud-provider }}" == "azure" ]; then
+            terraform apply -var subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }} -auto-approve
+          else
+            terraform apply -auto-approve
+          fi
+        working-directory: ./${{ inputs.module }}
