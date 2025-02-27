@@ -16,5 +16,5 @@ provider "scaleway" {
 }
 
 resource "scaleway_iam_user" "test-user" {
-  email = "giacomosirri9@gmail.com"
+  email = "test@gmail.com"
 }
