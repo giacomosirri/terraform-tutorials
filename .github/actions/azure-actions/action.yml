@@ -8,10 +8,9 @@ inputs:
   azure_tenant_id:
     required: true
 outputs:
-  working_directory:
+  working-directory:
     description: "The directory where the subsequent Terraform commands must be run."
-    value: "module-get-started-azure"
-    #value: ${{ steps.select-module.outputs.MODULE }}
+    value: ${{ steps.select-module.outputs.MODULE }}
 runs:
   using: "composite"
   steps:
