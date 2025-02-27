@@ -34,5 +34,5 @@ jobs:
         working-directory: ./${{ steps.composite-action.outputs.working-directory }}
         
       - name: Terraform apply command
-        run: terraform apply -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -input=false
+        run: terraform apply -var "subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -auto-approve
         working-directory: ./${{ steps.composite-action.outputs.working-directory }}
