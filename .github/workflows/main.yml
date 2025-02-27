@@ -43,4 +43,3 @@ jobs:
       cloud-provider: ${{ needs.read-config.outputs.cloud-provider }}
       module: ${{ needs.read-config.outputs.module }}
     secrets: inherit
-      

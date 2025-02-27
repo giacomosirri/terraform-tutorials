@@ -1,5 +1,32 @@
 name: 'Initialize AWS and Terraform'
 description: 'Composite action for automation of the AWS login and Terraform initialization.'
+
+inputs:
+  terraform_module:
+    description: "Terraform module name"
+    required: true
+    type: string
+
+  access_key_id:
+    description: "Access key of the IAM user"
+    required: true
+    type: string
+
+  secret_access_key:
+    description: "Secret access key of the IAM user"
+    required: true
+    type: string
+
+  default_region:
+    description: "Default AWS region where to deploy resources"
+    required: true
+    type: string
+
+  arn_role:
+    description: "ARN role that must be impersonated by the given user"
+    required: true
+    type: string
+
 runs:
   using: "composite"
   steps:
@@ -12,15 +39,9 @@ runs:
         role-to-assume: ${{ inputs.arn_role }} 
         role-session-name: github-actions-session
 
-    # Step 3: Set up Terraform (Install Terraform)
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
 
-    # Step 4: Terraform initialization
-    - run: terraform init
+    - run: Terraform init
       shell: bash
-      working-directory: ./${{ steps.select-module.outputs.MODULE }}
-
-    # Step 5: Terraform apply (provision resources)
-    - name: Terraform apply
-      run: terraform apply -auto-approve
+      working-directory: ./${{ inputs.terraform-module }}
