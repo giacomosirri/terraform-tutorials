@@ -40,7 +40,7 @@ jobs:
     secrets: inherit
 
   terraform-apply:
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
     needs: read-config
     uses: ./.github/workflows/terraform-apply.yml
     permissions:
