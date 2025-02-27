@@ -1,0 +1,4 @@
+{
+  "cloud_provider": "azure",
+  "module": "module-get-started"
+}
