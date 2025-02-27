@@ -1,0 +1,46 @@
+# This is the workflow that gets run every time a pull request is 
+# opened or edited or a commit is pushed to the main.
+name: Main workflow
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+    types: [opened, edited]
+    branches:
+      - main
+jobs:
+  read-config:
+    runs-on: ubuntu-latest
+    outputs:
+      cloud-provider: ${{ steps.read-json.outputs.cloud-provider }}
+      module: ${{ steps.read-json.outputs.module }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Read JSON and set outputs
+        id: read-json
+        run: |
+          json_file="./config.json"
+          cloud_provider=$(jq -r '.cloud_provider' $json_file)
+          module=$(jq -r '.module' $json_file)
+          echo "cloud-provider=`echo $cloud_provider`" >> "$GITHUB_OUTPUT"
+          echo "module=$(echo $module)" >> "$GITHUB_OUTPUT"
+
+  terraform-plan:
+    if: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' }}
+    needs: read-config
+    uses: ./.github/workflows/terraform-plan.yml
+    with:
+      cloud-provider: ${{ needs.read-config.outputs.cloud-provider }}
+      module: ${{ needs.read-config.outputs.module }}
+    secrets: inherit
+
+  terraform-apply:
+    if: ${{ github.event_name == 'push' }}
+    needs: read-config
+    uses: ./.github/workflows/terraform-apply.yml
+    with:
+      cloud-provider: ${{ needs.read-config.outputs.cloud-provider }}
+      module: ${{ needs.read-config.outputs.module }}
+    secrets: inherit
+      
