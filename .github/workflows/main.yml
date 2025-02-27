@@ -30,6 +30,10 @@ jobs:
     if: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' }}
     needs: read-config
     uses: ./.github/workflows/terraform-plan.yml
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
     with:
       cloud-provider: ${{ needs.read-config.outputs.cloud-provider }}
       module: ${{ needs.read-config.outputs.module }}
@@ -39,6 +43,9 @@ jobs:
     if: ${{ github.event_name == 'push' }}
     needs: read-config
     uses: ./.github/workflows/terraform-apply.yml
+    permissions:
+      id-token: write
+      contents: read
     with:
       cloud-provider: ${{ needs.read-config.outputs.cloud-provider }}
       module: ${{ needs.read-config.outputs.module }}
