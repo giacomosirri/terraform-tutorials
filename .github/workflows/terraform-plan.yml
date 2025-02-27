@@ -27,6 +27,16 @@ jobs:
           azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
 
+      - name: AWS login and Terraform initialization
+        if: ${{ inputs.cloud-provider == 'aws' }}
+        uses: ./.github/actions/aws-actions
+        with:
+          terraform_module: ${{ inputs.module }}
+          access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          default_region: "eu-central-1"
+          arn_role: ${{ secrets.AWS_ARN_ROLE }}
+
       - name: Terraform plan
         run: |
           if [ "${{ inputs.cloud-provider }}" == "azure" ]; then

@@ -26,7 +26,7 @@ jobs:
           azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
         
-      - name: Azure login and Terraform initialization
+      - name: AWS login and Terraform initialization
         if: ${{ inputs.cloud-provider == 'aws' }}
         uses: ./.github/actions/aws-actions
         with:
