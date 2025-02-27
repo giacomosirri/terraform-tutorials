@@ -43,4 +43,4 @@ jobs:
           else
             terraform apply -auto-approve
           fi
-        working-directory: ./${{ inputs.module }}
+        working-directory: ${{ inputs.cloud-provider }}/${{ inputs.module }}

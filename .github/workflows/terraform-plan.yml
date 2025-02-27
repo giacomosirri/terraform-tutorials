@@ -34,11 +34,11 @@ jobs:
           else
             terraform plan -out .planfile
           fi
-        working-directory: ./${{ inputs.module }}
+        working-directory: ${{ inputs.cloud-provider }}/${{ inputs.module }}
       
       - name: Post PR comment
         uses: borchero/terraform-plan-comment@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           planfile: .planfile
-          working-directory: ./${{ inputs.module }}
+          working-directory: ${{ inputs.cloud-provider }}/${{ inputs.module }}
