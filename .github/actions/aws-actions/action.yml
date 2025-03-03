@@ -37,6 +37,7 @@ runs:
         aws-secret-access-key: ${{ inputs.secret_access_key }}
         aws-region: ${{ inputs.default_region }}
         role-to-assume: ${{ inputs.arn_role }}
+        role-skip-session-tagging: true
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
