@@ -1,5 +1,5 @@
 name: 'Initialize Azure and Terraform'
-description: 'Composite action for automation of the Azure login and Terraform initialization.'
+description: 'Composite action for automating the Terraform initialization process for Azure.'
 
 inputs:
   terraform_module:
@@ -25,13 +25,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Azure login
-      uses: azure/login@v1
-      with:
-        client-id: ${{ inputs.azure_client_id }}
-        subscription-id: ${{ inputs.azure_subscription_id }}
-        tenant-id: ${{ inputs.azure_tenant_id }}
-
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
       

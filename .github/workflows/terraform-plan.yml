@@ -17,8 +17,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Azure login and Terraform initialization
-        id: composite-action
+      # Log into Azure regardless of the cloud provider we are provisioning on.
+      # This is because the storage where we save Terraform state files is a
+      # container in an Azure storage account.
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Terraform initialization for Azure
         if: ${{ inputs.cloud-provider == 'azure' }}
         uses: ./.github/actions/azure-actions
         with:
