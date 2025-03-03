@@ -2,7 +2,6 @@
 # opened or edited or a commit is pushed to the main.
 name: Main workflow
 on:
-  workflow_dispatch:
   push:
   pull_request:
     types: [opened, edited]
