@@ -37,6 +37,10 @@ jobs:
           default_region: "eu-central-1"
           arn_role: ${{ secrets.AWS_ARN_ROLE }}
 
+      - run: |
+          pwd
+          ls -alh
+
       - name: Terraform plan
         run: |
           if [ "${{ inputs.cloud-provider }}" == "azure" ]; then
