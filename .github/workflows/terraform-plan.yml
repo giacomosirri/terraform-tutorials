@@ -38,7 +38,7 @@ jobs:
           arn_role: ${{ secrets.AWS_ARN_ROLE }}
 
       - run: |
-          pwd
+          cd ./aws/module-get-started
           ls -alh
 
       - name: Terraform plan
