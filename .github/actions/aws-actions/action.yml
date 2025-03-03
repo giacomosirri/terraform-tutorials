@@ -43,6 +43,6 @@ runs:
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v3
 
-    - run: Terraform init
+    - run: terraform init
       shell: bash
       working-directory: aws/${{ inputs.terraform-module }}
