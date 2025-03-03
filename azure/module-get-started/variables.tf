@@ -1,8 +1,8 @@
 variable "resource_group_name" {
-    default = "myTFResourceGroup"
-    type = string
+  default = "myTFResourceGroup"
+  type    = string
 }
 
 variable "subscription_id" {
-    type = string
+  type = string
 }
