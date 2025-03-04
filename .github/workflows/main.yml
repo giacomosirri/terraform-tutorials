@@ -31,6 +31,7 @@ jobs:
             echo "module=$(echo $module)" >> "$GITHUB_OUTPUT"
           else
             echo "ERROR: cloud provider '$cloud_provider' is not recognized." >&2
+            exit 1
           fi
 
   terraform-plan:
