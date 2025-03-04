@@ -17,34 +17,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Log into Azure regardless of the cloud provider we are provisioning on.
-      # This is because the storage where we save Terraform state files is a
-      # container in an Azure storage account.
-      - name: Azure login
-        uses: azure/login@v1
+      - name: Setup
+        uses: ./.github/actions/
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-
-      - name: Terraform initialization for Azure
-        if: ${{ inputs.cloud-provider == 'azure' }}
-        uses: ./.github/actions/azure-actions
-        with:
-          terraform_module: ${{ inputs.module }}
-          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-        
-      - name: AWS login and Terraform initialization
-        if: ${{ inputs.cloud-provider == 'aws' }}
-        uses: ./.github/actions/aws-actions
-        with:
-          terraform_module: ${{ inputs.module }}
-          access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          default_region: "eu-central-1"
-          arn_role: ${{ secrets.AWS_ARN_ROLE }}
+          cloud-provider: ${{ inputs.cloud-provider }}
+          terraform-module: ${{ inputs.module }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-arn-role: ${{ secrets.AWS_ARN_ROLE }}
+          aws-default-region: eu-central-1
 
       - name: Terraform apply
         run: |
