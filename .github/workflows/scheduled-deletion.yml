@@ -1,0 +1,27 @@
+name: Scheduled deletion
+on:
+  schedule:
+    - cron: 0 18 * * 1-5
+jobs:
+  cronjob:
+    name: Delete programmatically every resource
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        terraform-module-dirs: ["aws/module-get-started", "azure/module-get-started"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/
+        with:
+          terraform-init-directory: ${{ matrix.terraform-module-dirs }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-arn-role: ${{ secrets.AWS_ARN_ROLE }}
+          aws-default-region: eu-central-1
+      
+      - run: terraform destroy -auto-approve
