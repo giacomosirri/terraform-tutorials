@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: 0 18 * * 1-5
 
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
 jobs:
   cronjob:
     name: Delete programmatically every resource
