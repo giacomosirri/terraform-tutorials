@@ -1,7 +1,10 @@
 name: Scheduled deletion
+
 on:
+  workflow_dispatch:
   schedule:
     - cron: 0 18 * * 1-5
+
 jobs:
   cronjob:
     name: Delete programmatically every resource
