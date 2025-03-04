@@ -1,4 +1,4 @@
 {
-  "cloud_provider": "acs",
+  "cloud_provider": "aws",
   "module": "module-get-started"
 }
