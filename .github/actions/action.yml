@@ -1,9 +1,9 @@
-name: 'Initialize Azure, AWS and Terraform'
-description: 'Composite action.'
+name: "Initialization action"
+description: "Initialize Azure, Terraform and, if needed, AWS."
 
 inputs:
   cloud-provider:
-    description: "Cloud-provider"
+    description: "Either 'aws' or 'azure'"
     required: true
     type: string
 
@@ -13,7 +13,7 @@ inputs:
     type: string
   
   azure-client-id:
-    description: "Azure service principal id (client id)"
+    description: "Azure service principal (client id)"
     required: true
     type: string
 
@@ -28,7 +28,7 @@ inputs:
     type: string
 
   aws-access-key-id:
-    description: "Access key ID of AWS's IAM user"
+    description: "Access key id of AWS's IAM user"
     required: true
     type: string
 
@@ -60,19 +60,7 @@ runs:
           subscription-id: ${{ inputs.azure-subscription-id }}
           tenant-id: ${{ inputs.azure-tenant-id }}
 
-      # Without setting the following environment variables, Terraform would try
-      # to build the AzureRM client by authenticating to Azure using the Azure CLI, 
-      # which is only supported as a user and not as a service principal. 
-      # - name: Set Azure environment variables
-      #   # Since every step runs its own shell environment, exporting variables is not
-      #   # sufficient to extend their scope to later steps. The way to make them available
-      #   # is to append them to the GITHUB_OUTPUT environment variable.
-      #   shell: bash
-      #   run: |
-      #     echo "export ARM_CLIENT_ID=${{ inputs.azure-client-id }} \
-      #     export ARM_SUBSCRIPTION_ID=${{ inputs.azure-subscription-id }} \
-      #     export ARM_TENANT_ID=${{ inputs.azure-tenant-id }}" >> "$GITHUB_OUTPUT"
-
+      # The AWS CLI is needed only when we want to apply a configuration on AWS.
       - name: Set up AWS CLI
         if: ${{ inputs.cloud-provider == 'aws' }}
         uses: aws-actions/configure-aws-credentials@v1
@@ -81,15 +69,18 @@ runs:
           aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
           role-to-assume: ${{ inputs.aws-arn-role }}
           aws-region: ${{ inputs.aws-default-region }}
+          # The following two parameters allow to avoid runtime errors.
           role-skip-session-tagging: true
           role-duration-seconds: 900
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
+      # Inside a composite action, each 'run' step uses its own shell environment.
+      # We must export Azure's subscription id as an environment variable, otherwise
+      # Terraform's backend initialization would fail.
       - run: |
           export ARM_SUBSCRIPTION_ID=${{ inputs.azure-subscription-id }}
           terraform init
         shell: bash
         working-directory: ${{ inputs.cloud-provider }}/${{ inputs.terraform-module }}
-
