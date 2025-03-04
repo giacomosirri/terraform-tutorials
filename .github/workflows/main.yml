@@ -3,6 +3,7 @@
 name: Main workflow
 
 on:
+  workflow_dispatch:
   push:
   pull_request:
     types: [opened, edited]
@@ -49,8 +50,8 @@ jobs:
     secrets: inherit
 
   terraform-apply:
-    # Execute only when a pull request gets merged into the main.
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    # Execute when a pull request gets merged into the main, or when manually requested.
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch' }}
     needs: read-config
     uses: ./.github/workflows/terraform-apply.yml
     permissions:
