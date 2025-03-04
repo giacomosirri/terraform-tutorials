@@ -26,8 +26,11 @@ jobs:
           json_file="./config.json"
           cloud_provider=$(jq -r '.cloud_provider' $json_file)
           module=$(jq -r '.module' $json_file)
-          echo "cloud-provider=`echo $cloud_provider`" >> "$GITHUB_OUTPUT"
-          echo "module=$(echo $module)" >> "$GITHUB_OUTPUT"
+          if [ $cloud_provider -eq "aws" || $cloud_provider -eq "azure" ]; then
+            echo "cloud-provider=`echo $cloud_provider`" >> "$GITHUB_OUTPUT"
+            echo "module=$(echo $module)" >> "$GITHUB_OUTPUT"
+          else
+            echo "ERROR: cloud provider '$cloud_provider' is not recognized."
 
   terraform-plan:
     # Execute only when a pull request gets opened or edited.
