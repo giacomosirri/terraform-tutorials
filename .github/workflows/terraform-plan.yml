@@ -27,6 +27,19 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
+      # Without setting the following environment variables, Terraform would try
+      # to build the AzureRM client by authenticating to Azure using the Azure CLI, 
+      # which is only supported as a user and not as a service principal. 
+      - name: Set environment variables
+        # Since every step runs its own shell environment, exporting variables is not
+        # sufficient to extend their scope to later steps. The way to make them available
+        # is to append them to the GITHUB_OUTPUT environment variable.
+        shell: bash
+        run: |
+          echo "export ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }} \
+          export ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }} \
+          export ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> "$GITHUB_OUTPUT"
+
       - name: Terraform initialization for Azure
         if: ${{ inputs.cloud-provider == 'azure' }}
         uses: ./.github/actions/azure-actions
