@@ -33,13 +33,14 @@ jobs:
           aws-default-region: eu-central-1
 
       - name: Terraform plan
+        working-directory: ${{ inputs.cloud-provider }}/${{ inputs.module }}
         run: |
           if [ "${{ inputs.cloud-provider }}" == "azure" ]; then
+            export ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}
             terraform plan -var subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }} -out .planfile
           else
             terraform plan -out .planfile
           fi
-        working-directory: ${{ inputs.cloud-provider }}/${{ inputs.module }}
       
       - name: Post PR comment
         uses: borchero/terraform-plan-comment@v2
