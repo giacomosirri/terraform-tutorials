@@ -1,0 +1,95 @@
+name: 'Initialize Azure, AWS and Terraform'
+description: 'Composite action.'
+
+inputs:
+  cloud-provider:
+    description: "Cloud-provider"
+    required: true
+    type: string
+
+  terraform-module:
+    description: "Terraform module name"
+    required: true
+    type: string
+  
+  azure-client-id:
+    description: "Azure service principal id (client id)"
+    required: true
+    type: string
+
+  azure-subscription-id:
+    description: "Azure subscription id"
+    required: true
+    type: string
+
+  azure-tenant-id:
+    description: "Azure tenant id"
+    required: true
+    type: string
+
+  aws-access-key-id:
+    description: "Access key ID of AWS's IAM user"
+    required: true
+    type: string
+
+  aws-secret-access-key:
+    description: "Secret access key of AWS's IAM user"
+    required: true
+    type: string
+
+  aws-arn-role:
+    description: "AWS's ARN role that must be impersonated by the given user"
+    required: true
+    type: string
+
+  aws-default-region:
+    description: "Default AWS region where to deploy resources"
+    required: true
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+      # Log into Azure regardless of the cloud provider we are provisioning on.
+      # This is because the storage where we save Terraform state files is a
+      # container in an Azure storage account.
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ inputs.azure-client-id }}
+          subscription-id: ${{ inputs.azure-subscription-id }}
+          tenant-id: ${{ inputs.azure-tenant-id }}
+
+      # Without setting the following environment variables, Terraform would try
+      # to build the AzureRM client by authenticating to Azure using the Azure CLI, 
+      # which is only supported as a user and not as a service principal. 
+      # - name: Set Azure environment variables
+      #   # Since every step runs its own shell environment, exporting variables is not
+      #   # sufficient to extend their scope to later steps. The way to make them available
+      #   # is to append them to the GITHUB_OUTPUT environment variable.
+      #   shell: bash
+      #   run: |
+      #     echo "export ARM_CLIENT_ID=${{ inputs.azure-client-id }} \
+      #     export ARM_SUBSCRIPTION_ID=${{ inputs.azure-subscription-id }} \
+      #     export ARM_TENANT_ID=${{ inputs.azure-tenant-id }}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up AWS CLI
+        if: ${{ inputs.cloud-provider == 'aws' }}
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ inputs.aws-access-key-id }}
+          aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+          role-to-assume: ${{ inputs.aws-arn-role }}
+          aws-region: ${{ inputs.aws-default-region }}
+          role-skip-session-tagging: true
+          role-duration-seconds: 900
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - run: |
+          export ARM_SUBSCRIPTION_ID=${{ inputs.azure-subscription-id }}
+          terraform init
+        shell: bash
+        working-directory: ${{ inputs.cloud-provider }}/${{ inputs.terraform-module }}
+
