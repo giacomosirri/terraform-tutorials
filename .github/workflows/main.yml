@@ -30,7 +30,8 @@ jobs:
             echo "cloud-provider=`echo $cloud_provider`" >> "$GITHUB_OUTPUT"
             echo "module=$(echo $module)" >> "$GITHUB_OUTPUT"
           else
-            echo "ERROR: cloud provider '$cloud_provider' is not recognized."
+            echo "ERROR: cloud provider '$cloud_provider' is not recognized." >&2
+          fi
 
   terraform-plan:
     # Execute only when a pull request gets opened or edited.
