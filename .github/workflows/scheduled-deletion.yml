@@ -33,3 +33,4 @@ jobs:
           aws-default-region: eu-central-1
       
       - run: terraform destroy -auto-approve
+        working-directory: ${{ matrix.terraform-module-dirs }}
