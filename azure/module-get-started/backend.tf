@@ -4,5 +4,6 @@ terraform {
     container_name       = "terraformstatefilescontainer"
     key                  = "azure.terraform.tfstate"
     use_azuread_auth     = true
+    use_oidc             = true
   }
 }
