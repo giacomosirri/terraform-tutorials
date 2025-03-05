@@ -36,7 +36,7 @@ jobs:
           fi
 
   terraform-plan:
-    # Execute only when a pull request gets opened or edited.
+    # Execute only when a pull request gets opened, edited or synchronized.
     if: ${{ github.event_name == 'pull_request' }}
     needs: read-config
     uses: ./.github/workflows/terraform-plan.yml
