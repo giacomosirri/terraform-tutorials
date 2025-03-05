@@ -86,7 +86,6 @@ runs:
           export ARM_CLIENT_ID=${{ inputs.azure-client-id }}
           export ARM_SUBSCRIPTION_ID=${{ inputs.azure-subscription-id }}
           export ARM_TENANT_ID=${{ inputs.azure-tenant-id }}
-          export TF_LOG=DEBUG
           terraform init
         shell: bash
         working-directory: ${{ inputs.cloud-provider }}/${{ inputs.terraform-module }}
