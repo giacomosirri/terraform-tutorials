@@ -32,5 +32,7 @@ jobs:
           aws-arn-role: ${{ secrets.AWS_ARN_ROLE }}
           aws-default-region: eu-central-1
       
-      - run: terraform destroy -auto-approve
+      - run: |
+          export ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          terraform destroy -auto-approve
         working-directory: ${{ matrix.terraform-module-dirs }}
