@@ -3,20 +3,15 @@ description: "Initialize Azure, Terraform and, if needed, AWS."
 
 inputs:
   cloud-provider:
-    description: "If specified, it must be either 'aws' or 'azure'"
-    required: false
+    description: "Must be either 'aws' or 'azure'"
+    required: true
     type: string
 
   terraform-module:
     description: "Terraform module name"
-    required: false
+    required: true
     type: string
 
-  terraform-init-directory:
-    description: "The path to the directory where Terraform must be initialized"
-    required: false
-    type: string
-  
   azure-client-id:
     description: "Azure service principal (client id)"
     required: true
@@ -81,20 +76,12 @@ runs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # Inside a composite action, each 'run' step uses its own shell environment.
-      # We must export Azure's subscription id as an environment variable, otherwise
-      # Terraform's backend initialization would fail.
+      # We must export Azure's subscription id as an environment variable, 
+      # otherwise Terraform's backend cloud storage initialization would fail.
+      # This allows to avoid setting the subscription id inside the backend 
+      # configuration, which would expose its value in clear text.
       - run: |
           export ARM_SUBSCRIPTION_ID=${{ inputs.azure-subscription-id }}
           terraform init
-        if: ${{ inputs.terraform-init-directory != '' }}
-        id: init-dir-specified
-        shell: bash
-        working-directory: ${{ inputs.terraform-init-directory }}
-
-      - run: |
-          export ARM_SUBSCRIPTION_ID=${{ inputs.azure-subscription-id }}
-          terraform init
-        if: ${{ steps.init-dir-specified.outcome == 'skipped' }}
         shell: bash
         working-directory: ${{ inputs.cloud-provider }}/${{ inputs.terraform-module }}

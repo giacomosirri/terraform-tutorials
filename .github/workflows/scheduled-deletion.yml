@@ -16,14 +16,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        terraform-module-dirs: ["aws/module-get-started", "azure/module-get-started"]
+        cloud-provider: ["aws", "azure"]
+        module: ["module-get-started"]
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup
         uses: ./.github/actions/
         with:
-          terraform-init-directory: ${{ matrix.terraform-module-dirs }}
+          cloud-provider: ${{ matrix.cloud-provider }}
+          terraform-module: ${{ matrix.module }}
           azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
           azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -35,4 +37,4 @@ jobs:
       - run: |
           export ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}
           terraform destroy -auto-approve
-        working-directory: ${{ matrix.terraform-module-dirs }}
+        working-directory: ${{ matrix.cloud-provider }}/${{ matrix.module }}
