@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        cloud-provider: ["aws", "azure"]
+        cloud-provider: ["azure", "aws"]
         module: ["module-get-started"]
     steps:
       - uses: actions/checkout@v4
