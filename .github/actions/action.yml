@@ -76,7 +76,7 @@ runs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.10.5" 
+          terraform_version: "1.11.0" 
 
       # We must export Azure's subscription id as an environment variable, 
       # otherwise Terraform's backend cloud storage initialization would fail.
