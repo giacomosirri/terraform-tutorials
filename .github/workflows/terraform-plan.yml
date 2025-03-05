@@ -35,8 +35,9 @@ jobs:
       - name: Terraform plan
         working-directory: ${{ inputs.cloud-provider }}/${{ inputs.module }}
         run: |
+          export ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}
           export ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          if [ "${{ inputs.cloud-provider }}" == "azure" ]; then
+          export ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}          if [ "${{ inputs.cloud-provider }}" == "azure" ]; then
             terraform plan -var subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }} -out .planfile
           else
             terraform plan -out .planfile
