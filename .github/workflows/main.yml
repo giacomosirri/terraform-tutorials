@@ -5,6 +5,8 @@ name: Main workflow
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
   pull_request:
     types: [opened, edited, synchronize]
     branches:
@@ -51,6 +53,9 @@ jobs:
 
   terraform-apply:
     # Execute when a pull request gets merged into the main, or when manually requested.
+    # The check on the branch is redundant, since it is also stated as a filter in the 
+    # events section. However, the events section might change with time, so it is always
+    # better to put strong conditions also on the job itself. 
     if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch' }}
     needs: read-config
     uses: ./.github/workflows/terraform-apply.yml
