@@ -1,4 +1,4 @@
 {
-  "cloud_provider": "azure",
-  "module": "module-get-started"
+  "cloud_provider": "aws",
+  "module": "module-terraform-modules-1"
 }
