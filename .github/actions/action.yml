@@ -78,10 +78,17 @@ runs:
         with:
           terraform_version: "1.11.0"
 
-      - name: Where am I
-        run: |
-          pwd
-          ls -alh
+      # This is a workaround for the following warning, that happens when trying
+      # to include a child module containing a 'backend' block into a root module:
+      #   Any selected backend applies to the entire configuration, so Terraform 
+      #   expects provider configurations only in the root module.
+      #   This is a warning rather than an error because it's sometimes convenient to
+      #   temporarily call a root module as a child module for testing purposes, but
+      #   this backend configuration block will have no effect.
+      - name: Copy the common module into this module
+        run: cp ../common/* .
+        shell: bash
+        working-directory: ${{ inputs.cloud-provider }}/${{ inputs.terraform-module }}
 
       # We must export Azure's subscription id as an environment variable, 
       # otherwise Terraform's backend cloud storage initialization would fail.
