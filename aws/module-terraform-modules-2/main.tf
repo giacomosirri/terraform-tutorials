@@ -2,13 +2,17 @@
 # SPDX-License-Identifier: MPL-2.0
 
 provider "aws" {
-  region = "us-west-2"
+  region = "eu-central-1"
 
   default_tags {
     tags = {
       hashicorp-learn = "module-use"
     }
   }
+}
+
+module "backend" {
+  source = "../common"
 }
 
 module "vpc" {
