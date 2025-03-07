@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         cloud-provider: ["azure", "aws"]
-        module: ["module-get-started"]
+        module: ["module-get-started", module-terraform-modules-1, module-terraform-locals]
     steps:
       - uses: actions/checkout@v4
 
