@@ -15,6 +15,7 @@ jobs:
     name: Delete programmatically every resource
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
         cloud-provider: ["azure", "aws"]
