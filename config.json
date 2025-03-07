@@ -1,4 +1,4 @@
 {
   "cloud_provider": "aws",
-  "module": "module-terraform-modules-1"
+  "module": "module-terraform-modules-2"
 }
