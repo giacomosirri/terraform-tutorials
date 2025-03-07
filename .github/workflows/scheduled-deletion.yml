@@ -15,6 +15,12 @@ jobs:
     name: Delete programmatically every resource
     runs-on: ubuntu-latest
     strategy:
+      # With max-parallel set to 1 and fail-fast set to false, the resulting behavior
+      # is that jobs run sequentially and, if one fails, the subsequent jobs run anyway.
+      # This is desirable, as the matrix could produce combinations that are not yet
+      # implemented, and which, as a result, break the job. Moreover, running jobs in parallel
+      # would be problematic, since there is a lock system on the backend storage account
+      # which prevents concurrent accesses to the state file. 
       max-parallel: 1
       fail-fast: false
       matrix:
