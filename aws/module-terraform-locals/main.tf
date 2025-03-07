@@ -20,10 +20,6 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-module "backend" {
-  source = "../common"
-}
-
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "2.64.0"
