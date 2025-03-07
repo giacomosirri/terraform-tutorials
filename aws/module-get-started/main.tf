@@ -13,10 +13,6 @@ provider "aws" {
   region = "eu-central-1"
 }
 
-module "backend" {
-  source = "../common"
-}
-
 resource "aws_instance" "app_server" {
   ami           = "ami-07eef52105e8a2059"
   instance_type = "t2.micro"
