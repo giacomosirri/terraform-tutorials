@@ -6,4 +6,7 @@ The goal of this small project was indeed dual: I both wanted to get started wit
 
 ## List of tutorials
 This is the list of tutorials I have followed:
-- [Get Started - Azure](https://developer.hashicorp.com/terraform/tutorials/azure-get-started) --> module-get-started-azure
+- [Get Started - Azure](https://developer.hashicorp.com/terraform/tutorials/azure-get-started) -> azure/module-get-started-azure
+- [Get Started - AWS](https://developer.hashicorp.com/terraform/tutorials/aws-get-started) -> aws/module-get-started
+- [Use registry modules in configuration](https://developer.hashicorp.com/terraform/tutorials/modules/module-use) -> aws/module-terraform-modules-1
+- [Build and use a local module](https://developer.hashicorp.com/terraform/tutorials/modules/module-create) -> aws/module-terraform-modules-2
